@@ -16,6 +16,10 @@
   cursor: pointer;
 }
 
+.btn:disabled {
+  opacity: .8;
+}
+
 .counter-cnt {
   display: flex;
   align-items: flex-start;
@@ -65,29 +69,3 @@
   color: #00311f;
 }
 
-.counter {
-  height: 100%;
-  min-height: fit-content;
-  padding: 30px;
-  border: 1px solid #fff7e6;
-  border-radius: 8px;
-  background: #fff7e6;
-  color: #00311f;
-}
-
-.counter__value {
-  font-size: 25px;
-  font-weight: 600;
-}
-
-.counter__bottom {
-  margin-top: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.counter__btn {
-  flex: 1 1 50%;
-}

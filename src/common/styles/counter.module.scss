@@ -1,0 +1,32 @@
+.counter {
+  height: 100%;
+  min-height: fit-content;
+  padding: 30px;
+  border: 1px solid #fff7e6;
+  border-radius: 8px;
+  background: #fff7e6;
+  color: #00311f;
+
+  &__value {
+    font-size: 25px;
+    font-weight: 600;
+  }
+
+  &__bottom {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  &__btn {
+    flex: 1 1 50%;
+  }
+
+}
+
+
+
+
+

@@ -1,22 +1,65 @@
-import {useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import './App.css'
+import sc from '../src/common/styles/counter.module.scss'
+import * as React from "react";
 
 function App() {
+  const maxValueRef = useRef<HTMLInputElement>(null)
+  const startValueRef = useRef<HTMLInputElement>(null)
+
+  const [btnSetActive, setBtnSetActive] = useState<boolean>(false)
+
   const [maxValue, setMaxValue] = useState<number>(0);
-  const [value, setValue] = useState<number>(0)
-  const maxValueRef = useRef<HTMLInputElement>(0)
-  const startValueRef = useRef<HTMLInputElement>(0)
+  const [startValue, setStartValue] = useState<number>(0)
+  const [counter, setCounter] = useState<number>(0)
+
+
+  useEffect(() => {
+    const savedMaxValue = localStorage.getItem('maxValue')
+    const savedStartValue = localStorage.getItem('startValue')
+
+    if(savedMaxValue !== null) {
+      setMaxValue(Number(savedMaxValue))
+    }
+
+    if(savedStartValue !== null) {
+      setStartValue(Number(savedStartValue))
+      setCounter(Number(savedStartValue))
+    }
+
+  }, []);
+
 
   const changeMaxValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBtnSetActive(false)
+    setMaxValue(e.currentTarget.valueAsNumber)
+  }
 
-    setMaxValue(value)
+  const changeStartValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBtnSetActive(false)
+    setStartValue(e.currentTarget.valueAsNumber)
   }
 
   const setValueHandler = () => {
-    const maxValue = maxValueRef.current.valueAsNumber
-    const startValue = startValueRef.current.valueAsNumber
-    setMaxValue(maxValue)
-    setValue(startValue)
+
+    if(startValueRef.current && maxValueRef.current) {
+      localStorage.setItem("startValue", startValueRef.current.value)
+      localStorage.setItem("maxValue", maxValueRef.current.value)
+    }
+
+
+    setStartValue(startValueRef.current?.valueAsNumber || 0)
+    // setMaxValue(maxValueRef.current.valueAsNumber)
+    // setCounter(startValueRef.current.valueAsNumber)
+    setBtnSetActive(!btnSetActive)
+  }
+
+  const increment = () => {
+    counter < maxValue ? setCounter(counter + 1) : maxValue;
+  }
+
+  const reset = () => {
+    setCounter(startValueRef.current?.valueAsNumber || 0)
   }
 
   return (
@@ -38,19 +81,31 @@ function App() {
             <input type="number"
                    id={'startValue'}
                    ref={startValueRef}
-                   value={value}
-                   className="form__input"/>
+                   value={startValue}
+                   className="form__input"
+                   onChange={changeStartValueHandler}/>
           </div>
           <div className="settings__bottom">
-            <button type="button" className="settings__btn btn" onClick={setValueHandler}>set</button>
+            <button type="button"
+                    className="settings__btn btn"
+                    onClick={setValueHandler}
+                    disabled={btnSetActive}
+            >set
+            </button>
           </div>
         </div>
       </div>
-      <div className="counter">
-        <div className="counter__value">{value}</div>
-        <div className="counter__bottom">
-          <button type="button" className="counter__btn btn">inc</button>
-          <button type="button" className="counter__btn btn">reset</button>
+      <div className={sc.counter}>
+        <div className={sc.counter__value}>{counter}</div>
+        <div className={sc.counter__bottom}>
+          <button type="button"
+                  className={`${sc.counter__btn} btn`}
+                  onClick={increment}>inc
+          </button>
+
+          <button type="button"
+                  className={`${sc.counter__btn} btn`} onClick={reset}>reset
+          </button>
         </div>
       </div>
     </div>
