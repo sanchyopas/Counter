@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from 'react'
 import './App.css'
 import sc from '../src/common/styles/counter.module.scss'
 import * as React from "react";
+import {Button} from "./common/Button/Button.tsx";
 
 function App() {
   const maxValueRef = useRef<HTMLInputElement>(null)
@@ -18,11 +19,11 @@ function App() {
     const savedMaxValue = localStorage.getItem('maxValue')
     const savedStartValue = localStorage.getItem('startValue')
 
-    if(savedMaxValue !== null) {
+    if (savedMaxValue !== null) {
       setMaxValue(Number(savedMaxValue))
     }
 
-    if(savedStartValue !== null) {
+    if (savedStartValue !== null) {
       setStartValue(Number(savedStartValue))
       setCounter(Number(savedStartValue))
     }
@@ -42,7 +43,7 @@ function App() {
 
   const setValueHandler = () => {
 
-    if(startValueRef.current && maxValueRef.current) {
+    if (startValueRef.current && maxValueRef.current) {
       localStorage.setItem("startValue", startValueRef.current.value)
       localStorage.setItem("maxValue", maxValueRef.current.value)
     }
@@ -54,13 +55,15 @@ function App() {
     setBtnSetActive(!btnSetActive)
   }
 
-  const increment = () => {
+  const incrementHandler = () => {
     counter < maxValue ? setCounter(counter + 1) : maxValue;
   }
 
-  const reset = () => {
+  const resetHandler = () => {
     setCounter(startValueRef.current?.valueAsNumber || 0)
   }
+
+  const hasError = startValue < 0 || startValue >= maxValue;
 
   return (
     <div className="counter-cnt">
@@ -72,7 +75,7 @@ function App() {
                    id={'maxValue'}
                    ref={maxValueRef}
                    value={maxValue}
-                   className="form__input"
+                   className={`form__input${hasError ? ' form__input--error' : ''}`}
                    onChange={changeMaxValueHandler}
             />
           </div>
@@ -82,30 +85,48 @@ function App() {
                    id={'startValue'}
                    ref={startValueRef}
                    value={startValue}
-                   className="form__input"
+                   className={`form__input${hasError ? ' form__input--error' : ''}`}
                    onChange={changeStartValueHandler}/>
           </div>
           <div className="settings__bottom">
             <button type="button"
                     className="settings__btn btn"
                     onClick={setValueHandler}
-                    disabled={btnSetActive}
+
             >set
             </button>
+            <Button className={'settings__btn'}
+                    onClick={setValueHandler}
+                    disabled={btnSetActive || hasError}
+            >
+              Set
+            </Button>
           </div>
         </div>
       </div>
       <div className={sc.counter}>
-        <div className={sc.counter__value}>{counter}</div>
+        <div className={`${sc.counter__value} ${counter === maxValue && 'error'}`}>
+          {
+            hasError
+              ? (<span>Incorrect Value!</span>)
+              : btnSetActive
+                ? counter
+                : 'Enter values and press "Set" button'
+          }
+        </div>
         <div className={sc.counter__bottom}>
-          <button type="button"
-                  className={`${sc.counter__btn} btn`}
-                  onClick={increment}>inc
-          </button>
-
-          <button type="button"
-                  className={`${sc.counter__btn} btn`} onClick={reset}>reset
-          </button>
+          <Button className={sc.counter__btn}
+                  onClick={incrementHandler}
+                  disabled={counter === maxValue || !btnSetActive}
+          >
+            Inc
+          </Button>
+          <Button className={sc.counter__btn}
+                  onClick={resetHandler}
+                  disabled={!btnSetActive}
+          >
+            Reset
+          </Button>
         </div>
       </div>
     </div>

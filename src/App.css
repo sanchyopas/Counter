@@ -20,6 +20,10 @@
   opacity: .8;
 }
 
+.error {
+  color: red;
+}
+
 .counter-cnt {
   display: flex;
   align-items: flex-start;
@@ -67,5 +71,11 @@
   background: none;
   border: 1px solid #00311f;
   color: #00311f;
+  outline: none;
+}
+
+.form__input--error {
+  border-color: red;
+
 }
 
